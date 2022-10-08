@@ -1,6 +1,7 @@
 from openpyxl import load_workbook
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 
 class Entry(BaseModel):
@@ -14,6 +15,24 @@ class Entry(BaseModel):
 
 
 app = FastAPI()
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+    "http://localhost:8081",
+    "http://localhost:8082",
+    "https://excel.bryceeppler.com",
+    "*"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 
 
 @app.get("/")
@@ -24,6 +43,8 @@ async def root():
 @app.get("/worksheets")
 async def worksheets():
     wb = load_workbook('form-submission-book.xlsx')
+    sheets = wb.sheetnames
+    wb.close()
     return wb.sheetnames
 
 
