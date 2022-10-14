@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
 import os.path
+import os
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -32,6 +33,8 @@ class Entry(BaseModel):
 
 app = FastAPI()
 origins = [
+    # add localhost with port $PORT
+    "http://localhost:$PORT",
     "http://localhost",
     "http://localhost:8080",
     "http://localhost:8081",
@@ -105,7 +108,7 @@ async def get_from_sheets():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
+                os.environ.get("CREDENTIALS"), SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.json', 'w') as token:
