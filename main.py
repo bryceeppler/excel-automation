@@ -125,8 +125,12 @@ async def get_from_sheets():
             return
 
         print('Name, Site, Crew, Date:')
+        data = []
         for row in values:
+            # add a string representation of columns A, B, C, and D
+            data.append(f'{row[0]}, {row[1]}, {row[2]}, {row[3]}')
             # Print columns A through D
             print('%s, %s, %s, %s' % (row[0], row[1], row[2], row[3]))
+        return data
     except HttpError as err:
         print(err)
